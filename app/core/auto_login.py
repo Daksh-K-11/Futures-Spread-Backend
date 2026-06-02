@@ -1,0 +1,141 @@
+import time
+import pyotp
+
+from urllib.parse import urlparse, parse_qs
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+
+from kiteconnect import KiteConnect
+
+from app.core.config import settings
+from app.core.token_manager import save_access_token
+
+
+def auto_generate_access_token():
+
+    kite = KiteConnect(
+        api_key=settings.KITE_API_KEY
+    )
+
+    options = webdriver.ChromeOptions()
+
+    options = webdriver.ChromeOptions()
+
+    options.add_argument("--headless=new")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--window-size=1920,1080")
+
+    driver = webdriver.Chrome(
+        service=Service(
+            ChromeDriverManager().install()
+        ),
+        options=options
+    )
+
+    try:
+
+        # -----------------------------------
+        # Open login page
+        # -----------------------------------
+
+        driver.get(kite.login_url())
+
+        time.sleep(2)
+
+        # -----------------------------------
+        # Enter user ID
+        # -----------------------------------
+
+        driver.find_element(
+            By.ID,
+            "userid"
+        ).send_keys(settings.ZERODHA_USER_ID)
+
+        # -----------------------------------
+        # Enter password
+        # -----------------------------------
+
+        driver.find_element(
+            By.ID,
+            "password"
+        ).send_keys(settings.ZERODHA_PASSWORD)
+
+        # -----------------------------------
+        # Login button
+        # -----------------------------------
+
+        driver.find_element(
+            By.XPATH,
+            "//button[@type='submit']"
+        ).click()
+
+        time.sleep(2)
+
+        # -----------------------------------
+        # Generate TOTP
+        # -----------------------------------
+
+        otp = pyotp.TOTP(
+            settings.ZERODHA_TOTP_SECRET
+        ).now()
+
+        # -----------------------------------
+        # Enter OTP
+        # -----------------------------------
+
+        driver.find_element(
+            By.XPATH,
+            "//input[@type='number']"
+        ).send_keys(otp)
+
+        # -----------------------------------
+        # Continue
+        # -----------------------------------
+
+        driver.find_element(
+            By.XPATH,
+            "//button[@type='submit']"
+        ).click()
+
+        time.sleep(3)
+
+        # -----------------------------------
+        # Capture request token
+        # -----------------------------------
+
+        current_url = driver.current_url
+
+        parsed = urlparse(current_url)
+
+        request_token = parse_qs(
+            parsed.query
+        )["request_token"][0]
+
+        # -----------------------------------
+        # Generate access token
+        # -----------------------------------
+
+        data = kite.generate_session(
+            request_token,
+            api_secret=settings.KITE_API_SECRET
+        )
+
+        access_token = data["access_token"]
+
+        # -----------------------------------
+        # Save token
+        # -----------------------------------
+
+        save_access_token(access_token)
+
+        return access_token
+
+    finally:
+
+        driver.quit()
