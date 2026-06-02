@@ -108,11 +108,16 @@ def auto_generate_access_token():
         # -----------------------------------
 
         print("Submitting OTP")
-        wait.until(
-            EC.element_to_be_clickable(
+        submit_button = wait.until(
+            EC.presence_of_element_located(
                 (By.XPATH, "//button[@type='submit']")
             )
-        ).click()
+        )
+
+        driver.execute_script(
+            "arguments[0].click();",
+            submit_button
+        )
         
         time.sleep(5)
 
