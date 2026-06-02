@@ -119,15 +119,7 @@ def auto_generate_access_token():
             submit_button
         )
         
-        time.sleep(5)
-
-        driver.save_screenshot("after_otp.png")
-
-        print(driver.current_url)
-
-        print(driver.page_source[:5000])
-        
-        time.sleep(5)
+        time.sleep(10)
         # -----------------------------------
         # Capture request token
         # -----------------------------------
