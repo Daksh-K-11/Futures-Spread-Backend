@@ -85,23 +85,23 @@ def auto_generate_access_token():
         time.sleep(5)
 
         # -----------------------------------
-        # Generate TOTP
-        # -----------------------------------
-
-        otp = pyotp.TOTP(
-            settings.ZERODHA_TOTP_SECRET
-        ).now()
-
-        # -----------------------------------
         # Enter OTP
         # -----------------------------------
 
         print("Entering OTP")
-        wait.until(
+
+        otp_input = wait.until(
             EC.element_to_be_clickable(
                 (By.XPATH, "//input[@type='number']")
             )
-        ).send_keys(otp)
+        )
+        
+        #Generate OTP using pyotp
+        otp = pyotp.TOTP(
+            settings.ZERODHA_TOTP_SECRET
+        ).now()
+
+        otp_input.send_keys(otp)
 
         # -----------------------------------
         # Continue
@@ -113,6 +113,14 @@ def auto_generate_access_token():
                 (By.XPATH, "//button[@type='submit']")
             )
         ).click()
+        
+        time.sleep(5)
+
+        driver.save_screenshot("after_otp.png")
+
+        print(driver.current_url)
+
+        print(driver.page_source[:5000])
         
         time.sleep(5)
         # -----------------------------------
