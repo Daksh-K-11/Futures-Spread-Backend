@@ -97,55 +97,56 @@ def futures_spread(
         if len(group) < 2:
             continue
 
-        for i in range(len(group) - 1):
 
-            current_row = group.iloc[i]
-            next_row = group.iloc[i + 1]
+        current_row = group.iloc[0]
 
-            current_ltp = current_row["ltp"]
-            next_ltp = next_row["ltp"]
+        # Next month contract
+        next_row = group.iloc[1]
 
-            if current_ltp is None or next_ltp is None:
-                continue
+        current_ltp = current_row["ltp"]
+        next_ltp = next_row["ltp"]
 
-            spread = round(
-                next_ltp - current_ltp,
-                2
-            )
+        if current_ltp is None or next_ltp is None:
+            continue
 
-            yield_percent = round(
-                (spread / current_ltp) * 100,
-                2
-            )
+        spread = round(
+            next_ltp - current_ltp,
+            2
+        )
 
-            result.append({
+        yield_percent = round(
+            (spread / current_ltp) * 100,
+            2
+        )
 
-                "company": company,
+        result.append({
 
-                "current_contract":
-                    current_row["tradingsymbol"],
+            "company": company,
 
-                "next_contract":
-                    next_row["tradingsymbol"],
+            "current_contract":
+                current_row["tradingsymbol"],
 
-                "current_expiry":
-                    str(current_row["expiry"]),
+            "next_contract":
+                next_row["tradingsymbol"],
 
-                "next_expiry":
-                    str(next_row["expiry"]),
+            "current_expiry":
+                str(current_row["expiry"]),
 
-                "current_ltp":
-                    current_ltp,
+            "next_expiry":
+                str(next_row["expiry"]),
 
-                "next_ltp":
-                    next_ltp,
+            "current_ltp":
+                current_ltp,
 
-                "spread":
-                    spread,
+            "next_ltp":
+                next_ltp,
 
-                "yield":
-                    yield_percent
-            })
+            "spread":
+                spread,
+
+            "yield":
+                yield_percent
+        })
 
     # -----------------------------
     # Sort by yield
