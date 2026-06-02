@@ -40,6 +40,8 @@ def auto_generate_access_token():
         options=options
     )
     
+    driver.implicitly_wait(5)
+    
     wait = WebDriverWait(driver, 20)
 
     try:
@@ -48,39 +50,39 @@ def auto_generate_access_token():
         # Open login page
         # -----------------------------------
 
+        print("Opening login page")
         driver.get(kite.login_url())
 
         # -----------------------------------
         # Enter user ID
         # -----------------------------------
 
-        userid_input = wait.until(
-            EC.presence_of_element_located((By.ID, "userid"))
-        )
-
-        userid_input.send_keys(settings.ZERODHA_USER_ID)
+        print("Entering user ID")
+        wait.until(
+            EC.element_to_be_clickable((By.ID, "userid"))
+        ).send_keys(settings.ZERODHA_USER_ID)
 
         # -----------------------------------
         # Enter password
         # -----------------------------------
 
-        password_input = wait.until(
-            EC.presence_of_element_located((By.ID, "password"))
-        )
-
-        password_input.send_keys(settings.ZERODHA_PASSWORD)
+        print("Entering password")
+        wait.until(
+            EC.element_to_be_clickable((By.ID, "password"))
+        ).send_keys(settings.ZERODHA_PASSWORD)
 
         # -----------------------------------
         # Login button
         # -----------------------------------
 
-        login_button = wait.until(
+        print("Clicking login")
+        wait.until(
             EC.element_to_be_clickable(
                 (By.XPATH, "//button[@type='submit']")
             )
-        )
-
-        login_button.click()
+        ).click()
+        
+        time.sleep(5)
 
         # -----------------------------------
         # Generate TOTP
@@ -94,25 +96,23 @@ def auto_generate_access_token():
         # Enter OTP
         # -----------------------------------
 
-        otp_input = wait.until(
-            EC.presence_of_element_located(
+        print("Entering OTP")
+        wait.until(
+            EC.element_to_be_clickable(
                 (By.XPATH, "//input[@type='number']")
             )
-        )
-
-        otp_input.send_keys(otp)
+        ).send_keys(otp)
 
         # -----------------------------------
         # Continue
         # -----------------------------------
 
-        continue_button = wait.until(
+        print("Submitting OTP")
+        wait.until(
             EC.element_to_be_clickable(
                 (By.XPATH, "//button[@type='submit']")
             )
-        )
-
-        continue_button.click()
+        ).click()
         # -----------------------------------
         # Capture request token
         # -----------------------------------
