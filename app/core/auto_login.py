@@ -41,6 +41,8 @@ def auto_generate_access_token():
         service=Service("/usr/bin/chromedriver"),
         options=options
     )
+    
+    wait = WebDriverWait(driver, 20)
 
     try:
 
@@ -50,40 +52,37 @@ def auto_generate_access_token():
 
         driver.get(kite.login_url())
 
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "userid"))
-        )
-
         # -----------------------------------
         # Enter user ID
         # -----------------------------------
 
-        driver.find_element(
-            By.ID,
-            "userid"
-        ).send_keys(settings.ZERODHA_USER_ID)
+        userid_input = wait.until(
+            EC.presence_of_element_located((By.ID, "userid"))
+        )
+
+        userid_input.send_keys(settings.ZERODHA_USER_ID)
 
         # -----------------------------------
         # Enter password
         # -----------------------------------
 
-        driver.find_element(
-            By.ID,
-            "password"
-        ).send_keys(settings.ZERODHA_PASSWORD)
+        password_input = wait.until(
+            EC.presence_of_element_located((By.ID, "password"))
+        )
+
+        password_input.send_keys(settings.ZERODHA_PASSWORD)
 
         # -----------------------------------
         # Login button
         # -----------------------------------
 
-        driver.find_element(
-            By.XPATH,
-            "//button[@type='submit']"
-        ).click()
-
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "userid"))
+        login_button = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//button[@type='submit']")
+            )
         )
+
+        login_button.click()
 
         # -----------------------------------
         # Generate TOTP
@@ -97,27 +96,32 @@ def auto_generate_access_token():
         # Enter OTP
         # -----------------------------------
 
-        driver.find_element(
-            By.XPATH,
-            "//input[@type='number']"
-        ).send_keys(otp)
+        otp_input = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@type='number']")
+            )
+        )
+
+        otp_input.send_keys(otp)
 
         # -----------------------------------
         # Continue
         # -----------------------------------
 
-        driver.find_element(
-            By.XPATH,
-            "//button[@type='submit']"
-        ).click()
-
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "userid"))
+        continue_button = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//button[@type='submit']")
+            )
         )
 
+        continue_button.click()
         # -----------------------------------
         # Capture request token
         # -----------------------------------
+        
+        wait.until(
+            lambda d: "request_token" in d.current_url
+        )
 
         current_url = driver.current_url
 
