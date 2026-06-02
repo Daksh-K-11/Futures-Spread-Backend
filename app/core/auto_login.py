@@ -25,19 +25,20 @@ def auto_generate_access_token():
     )
 
     options = webdriver.ChromeOptions()
-
-    options = webdriver.ChromeOptions()
+    
+    options.binary_location = "/usr/bin/chromium-browser"
 
     options.add_argument("--headless=new")
-    options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920,1080")
+    options.add_argument("--single-process")
+    options.add_argument("--disable-extensions")
+    options.add_argument("--remote-debugging-port=9222")
 
     driver = webdriver.Chrome(
-        service=Service(
-            ChromeDriverManager().install()
-        ),
+        service=Service("/usr/bin/chromedriver"),
         options=options
     )
 
