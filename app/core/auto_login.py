@@ -14,6 +14,9 @@ from kiteconnect import KiteConnect
 from app.core.config import settings
 from app.core.token_manager import save_access_token
 
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 
 def auto_generate_access_token():
 
@@ -46,7 +49,9 @@ def auto_generate_access_token():
 
         driver.get(kite.login_url())
 
-        time.sleep(2)
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "userid"))
+        )
 
         # -----------------------------------
         # Enter user ID
@@ -75,7 +80,9 @@ def auto_generate_access_token():
             "//button[@type='submit']"
         ).click()
 
-        time.sleep(2)
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "userid"))
+        )
 
         # -----------------------------------
         # Generate TOTP
@@ -103,7 +110,9 @@ def auto_generate_access_token():
             "//button[@type='submit']"
         ).click()
 
-        time.sleep(3)
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "userid"))
+        )
 
         # -----------------------------------
         # Capture request token
