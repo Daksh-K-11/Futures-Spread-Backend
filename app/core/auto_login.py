@@ -113,15 +113,34 @@ def auto_generate_access_token():
                 (By.XPATH, "//button[@type='submit']")
             )
         ).click()
+        
+        time.sleep(5)
         # -----------------------------------
         # Capture request token
         # -----------------------------------
         
-        wait.until(
-            lambda d: "request_token" in d.current_url
-        )
+        current_url = ""
 
-        current_url = driver.current_url
+        for _ in range(30):
+
+            try:
+
+                current_url = driver.current_url
+
+                print(current_url)
+
+                if "request_token" in current_url:
+                    break
+
+            except Exception:
+                pass
+
+            time.sleep(1)
+
+        else:
+            raise Exception(
+                "Request token not found"
+            )
 
         parsed = urlparse(current_url)
 
