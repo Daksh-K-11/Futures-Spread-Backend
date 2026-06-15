@@ -3,6 +3,7 @@ from apscheduler.schedulers.background import (
 )
 
 from apscheduler.triggers.cron import CronTrigger
+from zoneinfo import ZoneInfo
 
 from app.core.auto_login import (
     auto_generate_access_token
@@ -39,7 +40,8 @@ def start_scheduler():
 
         CronTrigger(
             hour=8,
-            minute=55
+            minute=55,
+            timezone=ZoneInfo("Asia/Kolkata")   
         ),
 
         id="kite_token_refresh",
