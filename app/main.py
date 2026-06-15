@@ -6,12 +6,15 @@ from app.core.scheduler import (
     refresh_kite_token
 )
 
+import logging
+
 from app.api.v1.api import api_router
 
 app = FastAPI(
     title="Spread Strategy API",
     version="1.0.0"
 )
+logger = logging.getLogger(__name__)
 
 app.add_middleware(
     CORSMiddleware,

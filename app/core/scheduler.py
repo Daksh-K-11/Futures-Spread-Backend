@@ -3,6 +3,7 @@ from apscheduler.schedulers.background import (
 )
 
 from app.core.kite import kite
+from app.main import logger
 
 from apscheduler.triggers.cron import CronTrigger
 from zoneinfo import ZoneInfo
@@ -23,15 +24,15 @@ def refresh_kite_token():
         
         kite.set_access_token(token)
 
-        print(
+        logger.info(
             "Access token refreshed successfully"
         )
 
-        print(token)
+        logger.info(token)
 
     except Exception as e:
 
-        print(
+        logger.exception(
             f"Token refresh failed: {e}"
         )
 
@@ -55,6 +56,6 @@ def start_scheduler():
 
     scheduler.start()
 
-    print(
+    logger.info(
         "Scheduler started"
     )

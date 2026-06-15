@@ -13,6 +13,7 @@ from kiteconnect import KiteConnect
 
 from app.core.config import settings
 from app.core.token_manager import save_access_token
+from app.main import logger 
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -50,14 +51,14 @@ def auto_generate_access_token():
         # Open login page
         # -----------------------------------
 
-        print("Opening login page")
+        logger.info("Opening login page")
         driver.get(kite.login_url())
 
         # -----------------------------------
         # Enter user ID
         # -----------------------------------
 
-        print("Entering user ID")
+        logger.info("Entering user ID")
         wait.until(
             EC.element_to_be_clickable((By.ID, "userid"))
         ).send_keys(settings.ZERODHA_USER_ID)
@@ -66,7 +67,7 @@ def auto_generate_access_token():
         # Enter password
         # -----------------------------------
 
-        print("Entering password")
+        logger.info("Entering password")
         wait.until(
             EC.element_to_be_clickable((By.ID, "password"))
         ).send_keys(settings.ZERODHA_PASSWORD)
@@ -75,7 +76,7 @@ def auto_generate_access_token():
         # Login button
         # -----------------------------------
 
-        print("Clicking login")
+        logger.info("Clicking login")
         wait.until(
             EC.element_to_be_clickable(
                 (By.XPATH, "//button[@type='submit']")
@@ -88,7 +89,7 @@ def auto_generate_access_token():
         # Enter OTP
         # -----------------------------------
 
-        print("Entering OTP")
+        logger.info("Entering OTP")
 
         otp_input = wait.until(
             EC.element_to_be_clickable(
@@ -107,7 +108,7 @@ def auto_generate_access_token():
         # Continue
         # -----------------------------------
 
-        print("Submitting OTP")
+        logger.info("Submitting OTP")
         submit_button = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[@type='submit']")
@@ -132,7 +133,7 @@ def auto_generate_access_token():
 
                 current_url = driver.current_url
 
-                print(current_url)
+                logger.info(current_url)
 
                 if "request_token" in current_url:
                     break
