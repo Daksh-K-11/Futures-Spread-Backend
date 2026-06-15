@@ -3,7 +3,7 @@ from apscheduler.schedulers.background import (
 )
 
 from app.core.kite import kite
-from app.main import logger
+import logging
 
 from apscheduler.triggers.cron import CronTrigger
 from zoneinfo import ZoneInfo
@@ -13,6 +13,7 @@ from app.core.auto_login import (
 )
 
 
+logger = logging.getLogger(__name__)
 scheduler = BackgroundScheduler()
 
 

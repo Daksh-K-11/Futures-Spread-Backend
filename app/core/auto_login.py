@@ -13,12 +13,12 @@ from kiteconnect import KiteConnect
 
 from app.core.config import settings
 from app.core.token_manager import save_access_token
-from app.main import logger 
+import logging
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-
+logger = logging.getLogger(__name__)
 def auto_generate_access_token():
 
     kite = KiteConnect(
