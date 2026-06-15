@@ -32,9 +32,10 @@ app.include_router(
 def startup_event():
     logger.warning("STARTUP EVENT EXECUTED")
 
-    refresh_kite_token()
-
-    logger.warning("TOKEN REFRESH COMPLETE")
+    if refresh_kite_token():
+        logger.info("TOKEN REFRESH COMPLETE")
+    else:
+        logger.error("TOKEN REFRESH FAILED")
 
     start_scheduler()
 

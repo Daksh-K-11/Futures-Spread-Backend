@@ -30,12 +30,16 @@ def refresh_kite_token():
         )
 
         logger.info(token)
+        
+        return True
 
     except Exception as e:
 
         logger.exception(
             f"Token refresh failed: {e}"
         )
+        
+        return False
 
 
 def start_scheduler():
