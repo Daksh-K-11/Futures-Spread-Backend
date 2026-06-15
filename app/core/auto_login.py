@@ -6,8 +6,8 @@ from urllib.parse import urlparse, parse_qs
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-# from webdriver_manager.chrome import ChromeDriverManager
-# from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 
 from kiteconnect import KiteConnect
 
@@ -35,14 +35,12 @@ def auto_generate_access_token():
     options.add_argument("--disable-extensions")
     options.add_argument("--remote-debugging-port=9222")
 
-    # driver = webdriver.Chrome(
-    #     service=Service(
-    #         ChromeDriverManager().install()
-    #     ),
-    #     options=options
-    # )
-    
-    driver = webdriver.Chrome(options=options)
+    driver = webdriver.Chrome(
+        service=Service(
+            ChromeDriverManager().install()
+        ),
+        options=options
+    )
     
     driver.implicitly_wait(5)
     
