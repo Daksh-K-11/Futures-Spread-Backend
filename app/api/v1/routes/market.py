@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Query
-from app.core.kite import kite
+from app.core.kite import get_kite
 
 import pandas as pd
 import time
@@ -29,6 +29,7 @@ def futures_spread(
     # -----------------------------
     # Fetch instruments
     # -----------------------------
+    kite = get_kite()
     instruments = kite.instruments("NFO")
 
     df = pd.DataFrame(instruments)

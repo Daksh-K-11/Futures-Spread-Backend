@@ -2,6 +2,8 @@ from apscheduler.schedulers.background import (
     BackgroundScheduler
 )
 
+from app.core.kite import kite
+
 from apscheduler.triggers.cron import CronTrigger
 from zoneinfo import ZoneInfo
 
@@ -18,6 +20,8 @@ def refresh_kite_token():
     try:
 
         token = auto_generate_access_token()
+        
+        kite.set_access_token(token)
 
         print(
             "Access token refreshed successfully"

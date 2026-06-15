@@ -6,6 +6,14 @@ kite = KiteConnect(
     api_key=settings.KITE_API_KEY
 )
 
-token = load_token()
-if token:
-    kite.set_access_token(token)
+# token = load_token()
+# if token:
+#     kite.set_access_token(token)
+
+def get_kite():
+    token = load_token()
+
+    if token:
+        kite.set_access_token(token)
+
+    return kite
