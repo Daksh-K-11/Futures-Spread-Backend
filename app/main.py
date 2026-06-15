@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+import logging
 from app.core.scheduler import (
     start_scheduler,
     refresh_kite_token
@@ -12,7 +12,7 @@ app = FastAPI(
     title="Spread Strategy API",
     version="1.0.0"
 )
-
+logger = logging.getLogger(__name__)
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,9 +30,12 @@ app.include_router(
 
 @app.on_event("startup")
 def startup_event():
+    logger.warning("STARTUP EVENT EXECUTED")
 
-    # Generate token immediately
     refresh_kite_token()
 
-    # Schedule daily refresh
+    logger.warning("TOKEN REFRESH COMPLETE")
+
     start_scheduler()
+
+    logger.warning("SCHEDULER STARTED")
