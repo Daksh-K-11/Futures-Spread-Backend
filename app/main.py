@@ -8,6 +8,11 @@ from app.core.scheduler import (
 
 from app.api.v1.api import api_router
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s"
+)
+
 app = FastAPI(
     title="Spread Strategy API",
     version="1.0.0"
@@ -30,7 +35,7 @@ app.include_router(
 
 @app.on_event("startup")
 def startup_event():
-    logger.warning("STARTUP EVENT EXECUTED")
+    logger.info("STARTUP EVENT EXECUTED")
 
     if refresh_kite_token():
         logger.info("TOKEN REFRESH COMPLETE")
@@ -39,4 +44,4 @@ def startup_event():
 
     start_scheduler()
 
-    logger.warning("SCHEDULER STARTED")
+    logger.info("SCHEDULER STARTED")
