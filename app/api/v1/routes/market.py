@@ -1,10 +1,15 @@
 from fastapi import APIRouter, Query
 from app.core.kite import get_kite
+from kiteconnect.exceptions import TokenException
+import logging
 
 import pandas as pd
 import time
 
+from app.core.scheduler import refresh_kite_token
+
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 @router.get("/futures-spread")
@@ -30,7 +35,15 @@ def futures_spread(
     # Fetch instruments
     # -----------------------------
     kite = get_kite()
-    instruments = kite.instruments("NFO")
+    try:
+        instruments = kite.instruments("NFO")
+    except TokenException as e:
+        logger.warning(
+        "Access token expired. Refreshing."
+        )
+        refresh_kite_token()
+        print(f"Token Exception: {e}")
+        # return {"success": False, "message": "Invalid token"}
 
     df = pd.DataFrame(instruments)
 
@@ -69,7 +82,15 @@ def futures_spread(
 
         batch = instrument_list[i:i+BATCH_SIZE]
 
-        ltp_data = kite.ltp(batch)
+        try:
+            ltp_data = kite.ltp(batch)
+        except TokenException as e:
+            logger.warning(
+            "Access token expired. Refreshing."
+            )
+            refresh_kite_token()
+            print(f"Token Exception: {e}")
+            return {"success": False, "message": "Invalid token"}
 
         all_ltp.update(ltp_data)
 
