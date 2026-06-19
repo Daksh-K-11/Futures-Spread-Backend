@@ -37,7 +37,9 @@ def auto_generate_access_token():
 
     driver = webdriver.Chrome(
         service=Service(
-            ChromeDriverManager().install()
+            ChromeDriverManager(
+                driver_version="149.0.7827.114"
+            ).install()
         ),
         options=options
     )
