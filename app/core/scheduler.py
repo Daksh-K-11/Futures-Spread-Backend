@@ -49,8 +49,8 @@ def start_scheduler():
         refresh_kite_token,
 
         CronTrigger(
-            hour="8,15,20",
-            minute=12,
+            hour="4,8,12,16,20,24",
+            minute=55,
             timezone=ZoneInfo("Asia/Kolkata")   
         ),
 
